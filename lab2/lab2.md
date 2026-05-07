@@ -172,3 +172,6 @@ INSERT INTO payments (order_id, payment_method, amount) VALUES
 ![alt](img/order_items.jpg)
 #### payments:
 ![alt](img/payments.jpg)
+***
+### ER діаграма:
+![alt](img/ERD.jpg)
