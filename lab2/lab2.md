@@ -116,8 +116,8 @@ CREATE TABLE IF NOT EXISTS payments (
 > - `payment_method` - *payment_method_enum,* користувацький тип для способу оплати, не може не існувати.
 > - `amount` - *NUMERIC(10,2),* фактично сплачена сума, не може не існувати, має бути більше нуля.
 ### Результат створення таблиць:
-i. ![alt](img/create_table.jpg)
-ii. ![alt](img/created_tables.jpg)
+i. ![alt](img/Create_table.jpg)
+ii. ![alt](img/Created_tables.jpg)
 ***
 ### 3. Вставити зразки рядків (принаймні 3–5 рядків на таблицю) за допомогою `INSERT INTO`.
 ```sql
@@ -174,4 +174,4 @@ INSERT INTO payments (order_id, payment_method, amount) VALUES
 ![alt](img/payments.jpg)
 ***
 ### ER діаграма:
-![alt](img/ERD.jpg)
+![alt](img/ERD.png)
