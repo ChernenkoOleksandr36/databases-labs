@@ -17,4 +17,40 @@ GROUP BY client_id;
 ```
 > Запит показує загальну кількість замовлень, тобто `COUNT(order_id)`, у стовпці з назвою `total_orders`, тобто   `AS total_orders`, для кожного клієнта за допомогою згрупування `GROUP BY client_id`.
 ## Результат:
-![alt](img/11.jpg)
+![alt](img/1,1.jpg)
+
+## Приклад 2 (Загальна сума доходу за кожним статусом замовлення):
+```sql
+SELECT status, SUM(total_amount) AS expected_revenue
+FROM orders 
+GROUP BY status;
+```
+> Запит показує загальну суму грошей з усіх замовлень, тобто `SUM(total_amount)`, у стовпці з назвою `expected_revenue`, тобто `AS expected_revenue`, згруповану за кожним поточним статусом замовлення `GROUP BY status`.
+## Результат:
+![alt](img/1,2.jpg)
+
+## Приклад 3 (Мінімальна, максимальна та середня ціна товарів у магазині):
+```sql
+SELECT MIN(price) AS min_price, 
+MAX(price) AS max_price, 
+ROUND(AVG(price), 2) AS avg_price
+FROM products;
+```
+> Запит обчислює найдешевшу ціну `MIN(price)`, найдорожчу `MAX(price)` та середню вартість товару в каталозі `ROUND(AVG(price)`, 2) з округленням до двох знаків після коми. Виводить результати у відповідних стовпцях `min_price`, `max_price` та `avg_price`.
+## Результат:
+![alt](img/1,3.jpg)
+
+## Приклад 4 (Кількість проданих одиниць для кожного товару, але тільки якщо продано більше 1 штуки):
+```sql
+SELECT product_id, SUM(quantity) AS total_sold
+FROM order_items 
+GROUP BY product_id
+HAVING SUM(quantity) > 1;
+```
+> Запит рахує загальну кількість проданих одиниць `SUM(quantity) AS total_sold` для кожного товару за допомогою `GROUP BY product_id`. Але виводяться лише ті товари, яких було замовлено загалом більше однієї штуки, завдяки умові `HAVING SUM(quantity) > 1`.
+## Результат:
+![alt](img/1,4.jpg)
+***
+## 3. Виконувати операції JOIN (принаймні INNER JOIN та LEFT JOIN), щоб об'єднати дані з кількох таблиць.
+> мінімум 3 запити, що використовують різні типи джоінів (INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL JOIN, CROSS JOIN)
+## 1
