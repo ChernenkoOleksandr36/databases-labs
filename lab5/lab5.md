@@ -37,4 +37,5 @@
 ---
 ER-діаграма бази даних:
 ![alt](img/er2_db_lab1.drawio.png)
+
 Запит для створення таблиць можна знайти у [лабораторній роботі 2](https://github.com/ChernenkoOleksandr36/databases-labs/blob/main/lab2/lab2.md)
