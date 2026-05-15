@@ -53,4 +53,69 @@ HAVING SUM(quantity) > 1;
 ***
 ## 3. Виконувати операції JOIN (принаймні INNER JOIN та LEFT JOIN), щоб об'єднати дані з кількох таблиць.
 > мінімум 3 запити, що використовують різні типи джоінів (INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL JOIN, CROSS JOIN)
-## 1
+## Приклад 1 (Вивід деталей замовлень разом з іменами клієнтів):
+```sql
+SELECT c.first_name, c.last_name, o.order_date, o.status, o.total_amount
+FROM customers c
+INNER JOIN orders o ON c.client_id = o.client_id;
+```
+> Запит поєднує таблицю клієнтів і таблицю замовлень. `INNER JOIN` виводить інформацію лише про тих клієнтів, які зробили хоча б одне замовлення. Об'єднання відбувається за умови збігу ідентифікаторів: `ON c.client_id = o.client_id`.
+## Результат:
+![alt](img/2,1.jpg)
+
+## Приклад 2 (Вивід усіх категорій та товарів у них або значення NULL, якщо в категорії немає товарів):
+```sql
+SELECT c.category_name, p.name AS product_name, p.price
+FROM categories c
+LEFT JOIN products p ON c.category_id = p.category_id;
+```
+> Запит показує всі значення з лівої таблиці, тобто абсолютно всі існуючі категорії `categories c`, та відповідні товари до них `LEFT JOIN products p`. Якщо категорія існує (наприклад, "Планшети"), але товарів у ній ще немає, замість назви товару та ціни буде виведено значення `NULL`.
+## Результат:
+![alt](img/2,2.jpg)
+
+## Приклад 3 (Вивід усіх товарів та інформації про їх продаж у чеках, або NULL, якщо товар жодного разу не замовляли):
+```sql
+SELECT p.name AS product_name, oi.quantity, oi.price_at_purchase
+FROM order_items oi
+RIGHT JOIN products p ON oi.product_id = p.product_id;
+```
+> `RIGHT JOIN` виводить усі значення з правої таблиці `products p`, тобто весь каталог магазину, і приєднує до них деталі з чеків замовлень `order_items oi`. Якщо якийсь товар жодного разу не замовляли, поля `quantity` та `price_at_purchase` для нього матимуть значення `NULL`.
+## результат:
+![alt](img/2,3.jpg)
+***
+
+## 4. Використання підзапитів.
+> мінімум 3 запити з використанням підзапитів (вибірка з підзапитом у SELECT, WHERE, або HAVING)
+## Приклад 1 (Вивід товарів, ціна яких вища за середню ціну всіх товарів у каталозі):
+```sql
+SELECT name, price
+FROM products
+WHERE price > (SELECT AVG(price) FROM products);
+```
+> Запит показує назви та ціни тих товарів, чия вартість більша за показник середньої ціни. Спочатку обчислюється підзапит `(SELECT AVG(price) FROM products)`, а потім головний запит фільтрує каталог`WHERE price > ...`.
+## Результат:
+![alt](img/4,1.jpg)
+
+## Приклад 2 (Вивід списку клієнтів та загальної суми, яку кожен з них успішно оплатив):
+```sql
+SELECT c.first_name, c.last_name, c.email,
+    (SELECT COALESCE(SUM(p.amount), 0) 
+     FROM payments p
+     INNER JOIN orders o ON p.order_id = o.order_id
+     WHERE o.client_id = c.client_id) AS total_paid
+FROM customers c;
+```
+> Запит виводить імена клієнтів та генерує новий стовпець `total_paid` за допомогою підзапиту в розділі `SELECT`. Підзапит шукає всі успішні оплати `payments`, приєднує до них `orders`, щоб визначити, кому належить оплата `WHERE o.client_id = c.client_id`, та сумує їх. `COALESCE(..., 0)` поверне 0, якщо клієнт ще нічого не купував.
+## Результат:
+![alt](img/4,2.jpg)
+
+## Приклад 3 (Вивід ідентифікаторів категорій, у яких середня ціна товару вища за середню ціну товару по всьому магазину):
+```sql
+SELECT category_id, ROUND(AVG(price), 2) AS avg_category_price
+FROM products
+GROUP BY category_id
+HAVING AVG(price) > (SELECT AVG(price) FROM products);
+```
+> Запит рахує середню ціну товарів всередині кожної категорії `GROUP BY category_id`. Умова `HAVING` містить підзапит `(SELECT AVG(price) FROM products)`, що обчислює глобальну середню ціну. У результаті виводяться лише ті категорії, які в середньому пропонують товари дорожчі за загальний показник.
+## Результат:
+![alt](img/4,3.jpg)
